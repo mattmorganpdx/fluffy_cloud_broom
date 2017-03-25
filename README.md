@@ -13,7 +13,7 @@ A raspberry pi, cloud, phone app project of some type.
 	* Python
 	* ???
 * An Android app
-* As good a reason as any to hack and old kindle.
+* As good a reason as any to hack an old kindle.
 
 ## What isn't FCB?
 * An Arduimo project
