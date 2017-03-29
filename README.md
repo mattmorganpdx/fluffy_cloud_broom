@@ -16,5 +16,5 @@ A raspberry pi, cloud, phone app project of some type.
 * As good a reason as any to hack an old kindle.
 
 ## What isn't FCB?
-* An Arduimo project
+* An Arduino project
 	* _It might be an arduino project_
