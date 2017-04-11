@@ -1,5 +1,5 @@
 import active_certs
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
 
