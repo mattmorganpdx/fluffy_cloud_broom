@@ -6,7 +6,9 @@ app = Flask(__name__)
 @app.route('/ovpn/api/v1.0/active_certs', methods=['GET'])
 def get_active_certs():
     certs = active_certs.get_active_certs()
-    return jsonify({'certs': certs})
+    response =  jsonify({'certs': certs})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @app.route('/ovpn/api/v1.0/active_certs', methods=['POST'])
@@ -20,7 +22,9 @@ def add_cert():
         'active': request.json['active'],
         'last_login': request.json['last']}
     active_certs.add_cert(data)
-    return jsonify({'cert': data}), 201
+    response = jsonify({'cert': data})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response, 201
 
 @app.route('/ovpn/api/v1.0/active_certs/<int:_id>', methods=['DELETE'])
 def del_cert(_id):
@@ -28,7 +32,9 @@ def del_cert(_id):
     if len(certs) == 0:
         abort(400)
     active_certs.del_cert(_id)
-    return jsonify({'result': True})
+    response = jsonify({'result': True})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 if __name__ == '__main__':
