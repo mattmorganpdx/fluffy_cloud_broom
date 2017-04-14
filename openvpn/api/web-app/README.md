@@ -11,5 +11,3 @@ _All required dependencies are provided by CDN at this time. Open the index.html
 ## Todo
 
 * PUT
-
-### Legal
