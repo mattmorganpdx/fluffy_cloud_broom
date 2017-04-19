@@ -9,10 +9,27 @@ const toPost = JSON.stringify({
     "last_login" : ""
 })
 
+function timeStamp() {
+  const now = new Date()
+  let month = now.getMonth() + 1
+  let day = now.getDate()
+  let year = now.getFullYear()
+  let hours = now.getHours()
+	let minutes = now.getMinutes()
+  let seconds = now.getSeconds()
+  
+	if (hours < 10) hours = `&nbsp;${hours}`
+	if (minutes < 10) minutes = `0${minutes}`
+  if (seconds < 10) seconds = `0${minutes}`
+  if (month < 10) month = `0${month}`
+  return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`
+}
+
 var vm = new Vue({
     el: '#entry',
     data: {
-      certs:[]
+      certs:[],
+      filename: ''
     },
     created: function() {
       console.log('ready')
@@ -30,24 +47,23 @@ var vm = new Vue({
             console.log(data)
             this.certs = data.certs
           },
-          error: function(xhr, err) {
-            console.log(err)
-            console.log('xhr status: ' + xhr.status)
-            console.log('xhr responseText: ' + xhr.responseText)
+          error: function(err) {
+            alert(console.log(err))
           }
         })
       },
       postData: function(){
         $.ajax({
-          type: 'POST',
           url: apiURL,
+          type: 'POST',
           data: toPost,
           success: function() {
             console.log("posted")
             vm.fetchData()
           },
-          error: function(xhr, err) {
-                console.log(err)
+          error: function (xhr, ErrorText, thrownError) {
+                console.log('ErrorText: ' + ErrorText + "\n")
+                console.log('thrownError: ' + thrownError + "\n")
                 console.log('xhr status: ' + xhr.status)
                 console.log('xhr responseText: ' + xhr.responseText)
           },
@@ -67,11 +83,37 @@ var vm = new Vue({
                console.log("deleted!")
                vm.fetchData()
             },
-            error: function(xhr, err) {
-                  console.log(err)
-                  console.log('xhr status: ' + xhr.status)
-                  console.log('xhr responseText: ' + xhr.responseText)
+            error: function(err) {
+              alert(console.log(err))
             }
+        })
+      },
+      submitForm: function() {
+        console.log('submitting new cert..')
+        $.ajax({
+          url: apiURL,
+          type: 'POST',
+          data: JSON.stringify({
+            file_name: this.filename,
+            path: '/home/mmorgan/client-configs/files/' + this.filename,
+            creation_time: timeStamp(),
+            active : false,
+            last_login: ''
+          }),
+          success: function() {
+            console.log("posted")
+            vm.fetchData()
+            vm.filename = ''
+          },
+          error: function(xhr, ErrorText, thrownError) {
+                console.log(this.data)
+                console.log('ErrorText: ' + ErrorText + "\n")
+                console.log('thrownError: ' + thrownError + "\n")
+                console.log('xhr status: ' + xhr.status)
+                console.log('xhr responseText: ' + xhr.responseText)
+          },
+          dataType: "json",
+          contentType: "application/json"
         })
       }
     }
