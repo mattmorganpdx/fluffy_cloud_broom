@@ -142,7 +142,9 @@ table>tbody>tr:nth-of-type(odd) {
     padding: 1em !important;
   }
 }
-.rwd-table th, .rwd-table td:before {
+.rwd-table th a, .rwd-table td:before {
   color: #4fe0fc;
+  text-decoration: none;
   text-transform: capitalize;
+  cursor: pointer;
 }

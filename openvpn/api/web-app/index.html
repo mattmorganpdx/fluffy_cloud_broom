@@ -17,45 +17,42 @@
 
       <div id="entry">
 
-        <form v-on:submit.prevent="submitForm" action="">
-          <label for="filename">File Name:</label>
-          <input v-model="filename" name="filename" type="text" placeholder="..."/>
+      <form v-on:submit.prevent="submitForm" action="">
+        <label for="filename">File Name:</label>
+        <input v-model="filename" name="filename" type="text" placeholder="..."/>
+        <button type="submit" style="margin-left: 1em" >Send</button>
+      </form>
 
-          <button type="submit" style="margin-left: 1em" >Send</button>
-        </form>
-
-        <table class="rwd-table">
-          <thead>
-            <tr>
-              <th>id</th>
-              <th>active</th>
-              <th>creation_time</th>
-              <th>file_name</th>
-              <th>last_login</th>
-              <th>path</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="cert in certs" >
-                <td>{{ cert.id }}</td>
-                <td>{{ cert.active }}</td>
-                <td>{{ cert.creation_time }}</td>
-                <td>{{ cert.file_name }}</td>
-                <td>{{ cert.last_login}}</td>
-                <td>{{ cert.path }}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="btnBlock">
-          <button v-on:click="fetchData">View data</button>
-          <button v-on:click="postData">Post test data</button>
-          <button v-on:click="removeData">remove test data</button>
-        </div>
-
+      <table class="rwd-table">
+        <thead>
+          <tr>
+            <th v-for="column in columns">
+              <a href="#" @click="sortBy(column)" :class="{ active: sortKey == column }">
+                {{ column }}
+              </a>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="cert in certs" >
+            <td data-th="id ">{{ cert.id }}</td>
+            <td data-th="active ">{{ cert.active }}</td>
+            <td data-th="creation_time ">{{ cert.creation_time }}</td>
+            <td data-th="file_name ">{{ cert.file_name }}</td>
+            <td data-th="last_login ">{{ cert.last_login}}</td>
+            <td data-th="path ">{{ cert.path }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="btnBlock">
+        <button v-on:click="fetchData">View data</button>
+        <button v-on:click="postData">Post test data</button>
+        <button v-on:click="removeData">remove test data</button>
       </div>
-
     </div>
 
-  <script src="main.js"></script>
+  </div>
+
+  <script src="index.js"></script>
   </body>
 </html>

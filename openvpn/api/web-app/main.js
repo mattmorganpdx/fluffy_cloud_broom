@@ -29,7 +29,9 @@ var vm = new Vue({
     el: '#entry',
     data: {
       certs:[],
-      filename: ''
+      filename: '',
+      sortKey: 'id',
+      columns: ['id','active','creation_time','file_name','last_login','path']
     },
     created: function() {
       console.log('ready')
@@ -101,20 +103,26 @@ var vm = new Vue({
             last_login: ''
           }),
           success: function() {
-            console.log("posted")
+            console.log("cert submitted")
             vm.fetchData()
             vm.filename = ''
           },
           error: function(xhr, ErrorText, thrownError) {
-                console.log(this.data)
-                console.log('ErrorText: ' + ErrorText + "\n")
-                console.log('thrownError: ' + thrownError + "\n")
-                console.log('xhr status: ' + xhr.status)
-                console.log('xhr responseText: ' + xhr.responseText)
+            console.log(this.data)
+            console.log('ErrorText: ' + ErrorText + "\n")
+            console.log('thrownError: ' + thrownError + "\n")
+            console.log('xhr status: ' + xhr.status)
+            console.log('xhr responseText: ' + xhr.responseText)
           },
-          dataType: "json",
-          contentType: "application/json"
+            dataType: "json",
+            contentType: "application/json"
+        })
+      },
+      sortBy: function(sortKey) {
+        console.log(`sortting ${sortKey}`)
+        vm.certs = vm.certs.sort(function(a,b) {
+          return (a[sortKey] > b[sortKey])
         })
       }
-    }
+  }
 })
