@@ -25,6 +25,13 @@ function timeStamp() {
   return `${month}/${day}/${year} ${hours}:${minutes}:${seconds}`
 }
 
+function handleErrors(res) {
+  if (!res.ok) {
+    throw Error(res.statusText)
+  }
+    return res
+}
+
 var vm = new Vue({
     el: '#entry',
     data: {
@@ -39,84 +46,71 @@ var vm = new Vue({
     },
     methods: {
       fetchData: function(){
-        $.ajax({
-          url: apiURL,
-          type: 'GET',
-          context: this,
-          dataType: 'json',
-          async: false,
-          success: function(data) {
-            console.log(data)
-            this.certs = data.certs
-          },
-          error: function(err) {
-            alert(console.log(err))
-          }
+        fetch(apiURL, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
         })
+          .then(handleErrors)
+          .then(res => res.json())
+          .then(res => {
+            console.log(`fetching ...\n ${JSON.stringify(res.certs)}`)
+            vm.certs = res.certs
+          })
+          .catch(error => console.log(error))
       },
       postData: function(){
-        $.ajax({
-          url: apiURL,
-          type: 'POST',
-          data: toPost,
-          success: function() {
-            console.log("posted")
-            vm.fetchData()
+        fetch(apiURL, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
           },
-          error: function (xhr, ErrorText, thrownError) {
-                console.log('ErrorText: ' + ErrorText + "\n")
-                console.log('thrownError: ' + thrownError + "\n")
-                console.log('xhr status: ' + xhr.status)
-                console.log('xhr responseText: ' + xhr.responseText)
-          },
-          dataType: "json",
-          contentType: "application/json"
+          body: toPost,
         })
+          .then(handleErrors)
+          .then(res => res.json())
+          .then(res => {
+            console.log(`posting ...\n ${JSON.stringify(res)}`)
+            vm.fetchData()
+          })
+          .catch(error => console.log(error))
       },
       removeData: function(){
         const sign = window.prompt('which id to remove')
-        $.ajax({
-            url: apiURL + '/' + sign,
-            type: 'DELETE',
-            data: toPost,
-            traditional:true,
-            dataType: 'json',
-            success: function() {
-               console.log("deleted!")
-               vm.fetchData()
-            },
-            error: function(err) {
-              alert(console.log(err))
-            }
+        fetch(apiURL + '/' + sign, {
+          method: 'DELETE',
         })
+          .then(handleErrors)
+          .then(res => res.json())
+          .then(res => {
+            console.log(`deleting ...\n ${JSON.stringify(res)}`)
+            vm.fetchData()
+          })
+          .catch(error => console.log(error))
       },
       submitForm: function() {
         console.log('submitting new cert..')
-        $.ajax({
-          url: apiURL,
-          type: 'POST',
-          data: JSON.stringify({
+        fetch(apiURL, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
             file_name: this.filename,
             path: '/home/mmorgan/client-configs/files/' + this.filename,
             creation_time: timeStamp(),
             active : false,
             last_login: ''
-          }),
-          success: function() {
-            console.log("cert submitted")
-            vm.fetchData()
-            vm.filename = ''
-          },
-          error: function(xhr, ErrorText, thrownError) {
-            console.log(this.data)
-            console.log('ErrorText: ' + ErrorText + "\n")
-            console.log('thrownError: ' + thrownError + "\n")
-            console.log('xhr status: ' + xhr.status)
-            console.log('xhr responseText: ' + xhr.responseText)
-          },
-            dataType: "json",
-            contentType: "application/json"
+          })
         })
+          .then(handleErrors)
+          .then(res => res.json())
+          .then(res => {
+            console.log(`posting ...\n ${JSON.stringify(res)}`)
+            vm.fetchData()
+          })
+          .catch(error => console.log(error))
       },
       sortBy: function(sortKey) {
         console.log(`sortting ${sortKey}`)
