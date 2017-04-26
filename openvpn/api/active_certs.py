@@ -10,11 +10,11 @@ def create_db():
     db_cursor.execute('''create table if not exists active_certs (name TEXT, active TEXT, path TEXT, ctime TEXT, last TEXT)''')
     db.commit()
     CERT_PATH = '/home/mmorgan/client-configs/files/'
-    
+
     ovpn_files = os.listdir(CERT_PATH)
-    
+
     return_data = []
-    
+
     for file in ovpn_files:
         if 'ovpn' in file:
             return_data.append({'file_name': file,
@@ -55,10 +55,18 @@ def add_cert(data):
     db.close()
     return
 
+def update_cert(_id, data)
+    db = sqlite3.connect('certs.db')
+    db_cursor = db.cursor()
+    db_cursor.execute('UPDATE active_certs SET (?,?,?,?,?) WHERE rowid=:id', {"id": _id}, (data['file_name'], data['active'], data['path'], data['creation_time'], data['last_login']))
+    db.commit()
+    db.close()
+    return
+
 def del_cert(_id):
     db = sqlite3.connect('certs.db')
     db_cursor = db.cursor()
-    db_cursor.execute('DELETE from active_certs where rowid=:id', {"id": _id}) 
+    db_cursor.execute('DELETE from active_certs where rowid=:id', {"id": _id})
     db.commit()
     db.close()
     return
