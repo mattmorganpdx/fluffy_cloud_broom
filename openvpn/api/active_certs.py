@@ -55,10 +55,14 @@ def add_cert(data):
     db.close()
     return
 
-def update_cert(_id, data)
+def update_cert(_id, data):
     db = sqlite3.connect('certs.db')
     db_cursor = db.cursor()
-    db_cursor.execute('UPDATE active_certs SET (?,?,?,?,?) WHERE rowid=:id', {"id": _id}, (data['file_name'], data['active'], data['path'], data['creation_time'], data['last_login']))
+    db_cursor.execute('''
+            UPDATE active_certs 
+            SET name = ?, active = ?, path = ?, ctime = ?, last = ? 
+            WHERE rowid = ?
+            ''', (data['file_name'], data['active'], data['path'], data['creation_time'], data['last_login'], _id))
     db.commit()
     db.close()
     return

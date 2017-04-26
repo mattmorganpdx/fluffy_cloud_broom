@@ -38,21 +38,22 @@ def update_cert(_id):
         abort(400)
     if not request.json:
         abort(400)
-    if 'file_name' in request.json and type(request.json['file_name']) != unicode:
+    if 'file_name' in request.json and type(request.json['file_name']) != str:
         abort(400)
-    if 'path' in request.json and type(request.json['path']) != unicode:
+    if 'path' in request.json and type(request.json['path']) != str:
         abort(400)
-    if 'creation_time' in request.json and type(request.json['creation_time']) != unicode:
+    if 'creation_time' in request.json and type(request.json['creation_time']) != str:
         abort(400)
-    if 'active' in request.json and type(request.json['active']) is not bool:
+    if 'active' in request.json and type(request.json['active']) != str:
         abort(400)
-    if 'last_login' in request.json and type(request.json['last_login']) != unicode:
+    if 'last_login' in request.json and type(request.json['last_login']) != str:
         abort(400)
     certs[0]['file_name'] = request.json.get('file_name', certs[0]['file_name'])
     certs[0]['path'] = request.json.get('path', certs[0]['path'])
     certs[0]['creation_time'] = request.json.get('creation_time', certs[0]['creation_time'])
     certs[0]['active'] = request.json.get('active', certs[0]['active'])
     certs[0]['last_login'] = request.json.get('last_login', certs[0]['last_login'])
+    active_certs.update_cert(_id, certs[0])
     response = jsonify({'cert': certs[0]})
     return response
 
