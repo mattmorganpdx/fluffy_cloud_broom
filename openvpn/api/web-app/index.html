@@ -36,13 +36,13 @@
             <td data-th="active ">{{ cert.active }}</td>
             <td data-th="creation_time ">{{ cert.creation_time }}</td>
             <td data-th="file_name ">{{ cert.file_name }}</td>
-            <td data-th="last_login ">{{ cert.last_login}}</td>
+            <td data-th="last_login ">{{ cert.last_login }}</td>
             <td data-th="path ">{{ cert.path }}</td>
           </tr>
         </tbody>
       </table>
       <div class="btnBlock">
-        <button v-on:click="fetchData">View data</button>
+        <button v-on:click="patchData">Update data</button>
         <button v-on:click="postData">Post test data</button>
         <button v-on:click="removeData">remove test data</button>
       </div>

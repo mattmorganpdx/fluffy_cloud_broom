@@ -36,6 +36,7 @@ var vm = new Vue({
     data: {
       certs:[],
       filename: '',
+      patchId: null,
       sortKey: 'id',
       columns: ['id','active','creation_time','file_name','last_login','path']
     },
@@ -87,35 +88,66 @@ var vm = new Vue({
           })
           .catch(error => console.log(error))
       },
-      submitForm: function() {
-        console.log('submitting new cert..')
-        fetch(apiURL, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            file_name: this.filename,
-            path: '/home/mmorgan/client-configs/files/' + this.filename,
-            creation_time: timeStamp(),
-            active : false,
-            last_login: ''
-          })
-        })
-          .then(handleErrors)
-          .then(res => res.json())
-          .then(res => {
-            console.log(`posting ...\n ${JSON.stringify(res)}`)
-            vm.fetchData()
-          })
-          .catch(error => console.log(error))
+      patchData: function() {
+        vm.patchId = window.prompt('which id to edit')
+        const patchCert = vm.certs.filter(c => { if(c.id == vm.patchId) return c })
+        vm.filename = patchCert[0].file_name
       },
-      sortBy: function(sortKey) {
-        console.log(`sortting ${sortKey}`)
-        vm.certs = vm.certs.sort(function(a,b) {
-          return (a[sortKey] > b[sortKey])
-        })
-      }
+      submitForm: function() {
+        if (vm.patchId != null) {
+          console.log(`patching cert with the id of ${vm.patchId}..`)
+          fetch(apiURL + '/' + vm.patchId, {
+            method: 'PUT',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              file_name: vm.filename,
+              active : 'false',
+              path: '/home/mmorgan/client-configs/files/' + vm.filename,
+              creation_time: timeStamp(),
+              last_login: ''
+            })
+          })
+            .then(handleErrors)
+            .then(res => res.json())
+            .then(res => {
+              console.log(`patching ...\n ${JSON.stringify(res)}`)
+              vm.patchId = null
+              vm.fetchData()
+            })
+            .catch(error => console.log(error))
+        } else {
+          console.log('submitting new cert..')
+          fetch(apiURL, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              file_name: this.filename,
+              path: '/home/mmorgan/client-configs/files/' + this.filename,
+              creation_time: timeStamp(),
+              active : false,
+              last_login: ''
+            })
+          })
+            .then(handleErrors)
+            .then(res => res.json())
+            .then(res => {
+              console.log(`posting ...\n ${JSON.stringify(res)}`)
+              vm.fetchData()
+            })
+            .catch(error => console.log(error))
+          }
+        },
+        sortBy: function(sortKey) {
+          console.log(`sortting ${sortKey}`)
+          vm.certs = vm.certs.sort(function(a,b) {
+            return (a[sortKey] > b[sortKey])
+          })
+        }
   }
 })
