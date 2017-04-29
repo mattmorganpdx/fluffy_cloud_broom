@@ -142,6 +142,7 @@ var vm = new Vue({
             })
             .catch(error => console.log(error))
           }
+          vm.filename = ''
         },
         sortBy: function(sortKey) {
           console.log(`sortting ${sortKey}`)
