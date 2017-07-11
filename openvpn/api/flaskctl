@@ -1,0 +1,26 @@
+#!/bin/bash
+
+ACTION=${1:-"start or stop"}
+
+function start {
+    echo starting...
+    cd /home/mmorgan/src/fluffy_cloud_broom/openvpn/api
+    nohup /home/mmorgan/venvs/fluffy/bin/python cert_api.py > /var/log/flask/flask.log 2>&1 &
+    # echo $! > /var/run/flask/flask.pid
+}
+
+function stop {
+    echo stopping...
+    kill $(cat /var/run/flask/flask.pid)
+    if [ $? != 0 ]; then
+        rm /var/run/flask/flask.pid
+    fi
+}
+
+if [ ${ACTION:-} == "start" ] ; then
+    start
+elif [ ${ACTION:-} == "stop" ] ; then
+    stop
+else
+    echo "start or stop"
+fi
